@@ -4,7 +4,6 @@ import random
 class dieside:
     """A class to define a side of a die"""
 
-
     def __init__(self, side_range=0, heart=0, surge=0, shield=0, miss=False):
         self.range = side_range
         self.heart = heart
@@ -12,18 +11,27 @@ class dieside:
         self.shield = shield
         self.miss = miss
 
-
     def __add__(self, other):
         if (self.miss or other.miss):
             output = dieside(0, 0, 0, 0, True)
         else:
             output = dieside(self.range + other.range,
-                          self.heart + other.heart,
-                          self.surge + other.surge,
-                          self.shield + other.shield,
-                          False)
+                            self.heart + other.heart,
+                            self.surge + other.surge,
+                            self.shield + other.shield,
+                            False)
         return output
 
+    def __sub__(self, other):
+        if (self.miss or other.miss):
+            output = dieside(0, 0, 0, 0, True)
+        else:
+            output = dieside(self.range - other.range,
+                            self.heart - other.heart,
+                            self.surge - other.surge,
+                            self.shield - other.shield,
+                            False)
+        return output
 
     def PrintDie(self):
         print('Range :', self.range)

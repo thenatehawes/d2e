@@ -19,7 +19,6 @@ class attack_mod:
             for i in attack_effect:
                 self.attack_effect.append(i)
 
-
     def __add__(self, other):
         output = attack_mod(mod_range=(self.range + other.range),
                             heart=(self.heart + other.heart),
@@ -30,6 +29,17 @@ class attack_mod:
                             status_effect=(self.status_effect + other.status_effect),
                             attack_effect=(self.attack_effect + other.attack_effect))
         return output
+
+    def __sub__(self, other):
+        output = attack_mod(mod_range=(self.range - other.range),
+                            heart=(self.heart - other.heart),
+                            surge=(self.surge - other.surge),
+                            shield=(self.shield - other.shield),
+                            sorcery=(self.sorcery - other.sorcery),
+                            stealthy=(self.stealthy - other.stealthy),
+                            # status_effect=(self.status_effect - other.status_effect),  # need to remove list items
+                            # attack_effect=(self.attack_effect - other.attack_effect))  # need to remove list items
+        return output  
 
     def PrintMod(self):
         print('Mod Range:', self.range)
