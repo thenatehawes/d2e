@@ -68,7 +68,7 @@
 			"file": "d2e_attack.py",
 			"settings":
 			{
-				"buffer_size": 3284,
+				"buffer_size": 3919,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -132,7 +132,7 @@
 	},
 	"expanded_folders":
 	[
-		"/C/Users/Krissy/Documents/python_projects/d2e attack roller"
+		"/C/Users/Nate/Documents/GitHub/d2e/d2e attack roller"
 	],
 	"file_history":
 	[
@@ -210,8 +210,8 @@
 						"selection":
 						[
 							[
-								261,
-								261
+								1131,
+								1131
 							]
 						],
 						"settings":
@@ -238,7 +238,7 @@
 							"syntax": "Packages/Python/Python.sublime-syntax"
 						},
 						"translation.x": 0.0,
-						"translation.y": 88.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
@@ -278,10 +278,12 @@
 									"selector": "source.python - string - constant.numeric"
 								}
 							],
-							"syntax": "Packages/Python/Python.sublime-syntax"
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 14.0,
-						"translation.y": 808.0,
+						"translation.y": 780.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 3,
@@ -375,7 +377,9 @@
 									"selector": "source.python - string - constant.numeric"
 								}
 							],
-							"syntax": "Packages/Python/Python.sublime-syntax"
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -390,15 +394,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3284,
+						"buffer_size": 3919,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2796,
-								2796
+								3003,
+								3003
 							]
 						],
 						"settings":
@@ -426,10 +430,12 @@
 									"selector": "source.python - string - constant.numeric"
 								}
 							],
-							"syntax": "Packages/Python/Python.sublime-syntax"
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1321.0,
+						"translation.y": 1006.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 2,
@@ -518,7 +524,7 @@
 		],
 		"width": 0.0
 	},
-	"selected_group": 0,
+	"selected_group": 1,
 	"settings":
 	{
 	},
