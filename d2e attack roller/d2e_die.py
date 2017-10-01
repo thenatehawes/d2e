@@ -1,37 +1,97 @@
 import random
+from d2e_mods import attack_mod
 
+class base_stats:
 
-class dieside:
-    """A class to define a side of a die"""
-
-    def __init__(self, side_range=0, heart=0, surge=0, shield=0, miss=False):
+    def __init__(self, side_range=0, heart=0, surge=0, shield=0):
         self.range = side_range
         self.heart = heart
         self.surge = surge
         self.shield = shield
-        self.miss = miss
 
     def __add__(self, other):
+        self_plus_other = base_stats(self.range + other.range,
+                                     self.heart + other.heart,
+                                     self.surge + other.surge,
+                                     self.shield + other.shield)
+
+        return self_plus_other
+
+    def __sub__(self, other):
+        self_minus_other = base_stats(self.range - other.range,
+                                      self.heart - other.heart,
+                                      self.surge - other.surge,
+                                      self.shield - other.shield)
+
+        return self_minus_other
+
+    def __iadd__(self, other):
+        self.range += other.range
+        self.heart += other.heart
+        self.surge += other.surge
+        self.shield += other.shield
+
+        return self
+
+    def __isub__(self, other):
+        self.range -= other.range
+        self.heart -= other.heart
+        self.surge -= other.surge
+        self.shield -= other.shield
+
+        return self
+
+
+class dieside(base_stats):
+    """A class to define a side of a die"""
+
+    def __init__(self, side_range=0, heart=0, surge=0, shield=0, miss=False):
+        self.miss = miss
+        base_stats.__init__(self, side_range, heart, surge, shield)
+
+    def __add__(self, other):
+        if type(other) is attack_mod:
+            output = attack_mod.__add__(other, self)
+            return output
+
         if (self.miss or other.miss):
-            output = dieside(0, 0, 0, 0, True)
+            output = dieside(miss=True)
         else:
-            output = dieside(self.range + other.range,
-                            self.heart + other.heart,
-                            self.surge + other.surge,
-                            self.shield + other.shield,
-                            False)
+            output = base_stats.__add__(self, other)
+            output.__class__ = dieside
+            output.miss = False
+
         return output
 
     def __sub__(self, other):
         if (self.miss or other.miss):
-            output = dieside(0, 0, 0, 0, True)
+            output = dieside(miss=True)
         else:
-            output = dieside(self.range - other.range,
-                            self.heart - other.heart,
-                            self.surge - other.surge,
-                            self.shield - other.shield,
-                            False)
+            output = base_stats.__sub__(self, other)
+            output.__class__ = dieside
+            output.miss = False
+
         return output
+
+    def __iadd__(self, other):
+        if (self.miss or other.miss):
+            self.miss = True
+            base_stats.__init__(self, side_range=0, heart=0, surge=0, shield=0)
+        else:
+            self.miss = False
+            base_stats.__iadd__(self, other)
+
+        return self
+
+    def __isub__(self, other):
+        if (self.miss or other.miss):
+            self.miss = True
+            base_stats.__init__(self, side_range=0, heart=0, surge=0, shield=0)
+        else:
+            self.miss = False
+            base_stats.__isub__(self, other)
+
+        return self
 
     def PrintDie(self):
         print('Range :', self.range)
@@ -39,6 +99,9 @@ class dieside:
         print('Surge :', self.surge)
         print('Shield :', self.shield)
         print('Miss :', self.miss)
+
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
 
 
 class die:
@@ -111,11 +174,13 @@ class die:
             self.side.append(dieside(2, 2, 1, 0, False))
             self.side.append(dieside(3, 2, 0, 0, False))
             self.side.append(dieside(5, 1, 0, 0, False))
-
-    def roll(self, side='rand'):
-        """ Roll the die, provide a side otherwise random """
-        if side == 'rand':
-            rand_side = random.randrange(0, 5, 1)
-            return self.side[rand_side]
         else:
+            raise ValueError('Unknown die color')
+
+    def roll(self, side=None):
+        """ Roll the die, provide a side otherwise random """
+        if side is not None:
             return self.side[side]
+        else:
+            rand_side = random.randrange(0, 6, 1)
+            return self.side[rand_side]

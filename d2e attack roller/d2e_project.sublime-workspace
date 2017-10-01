@@ -4,20 +4,68 @@
 		"selected_items":
 		[
 			[
-				"raw",
-				"raw_defense\tstatement"
-			],
-			[
 				"attack",
-				"attack_result\tclass"
+				"attack_effect\tstatement"
 			],
 			[
-				"surge",
-				"surge_mods\tstatement"
+				"smod",
+				"smod2\tstatement"
+			],
+			[
+				"test",
+				"testmod\tstatement"
 			],
 			[
 				"surg",
-				"surge_mod2\tstatement"
+				"surge_mod"
+			],
+			[
+				"atta",
+				"attack_effect\tparam"
+			],
+			[
+				"surge",
+				"surge_mod\tclass"
+			],
+			[
+				"st",
+				"status_effect"
+			],
+			[
+				"d2e_",
+				"d2e_mods\tmodule"
+			],
+			[
+				"shiel",
+				"shield_cum"
+			],
+			[
+				"shield",
+				"shield_cum\tstatement"
+			],
+			[
+				"roll",
+				"roll_output\tstatement"
+			],
+			[
+				"base_",
+				"base_stats_obj\tstatement"
+			],
+			[
+				"dieside",
+				"dieside_obj\tparam"
+			],
+			[
+				"raw",
+				"raw_attack\tstatement"
+			],
+			[
+				"first",
+				"first_obj\tparam"
+			],
+			[
+				"sur",
+				"surge_unspent"
 			],
 			[
 				"rand",
@@ -37,10 +85,19 @@
 			}
 		},
 		{
-			"file": "d2e_mods.py",
+			"file": "mod_unit_test.py",
 			"settings":
 			{
-				"buffer_size": 2852,
+				"buffer_size": 2212,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "die_unit_test.py",
+			"settings":
+			{
+				"buffer_size": 2948,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -49,7 +106,7 @@
 			"file": "d2e_attack_result.py",
 			"settings":
 			{
-				"buffer_size": 1217,
+				"buffer_size": 1761,
 				"encoding": "UTF-8",
 				"line_ending": "Windows",
 				"name": "class"
@@ -59,20 +116,38 @@
 			"file": "d2e_die.py",
 			"settings":
 			{
-				"buffer_size": 4681,
+				"buffer_size": 6465,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"contents": "from d2e_die import dieside, die\nfrom d2e_mods import attack_mod, surge_mod\nfrom d2e_attack_result import attack_result\n\n\nclass attack:\n\n    def __init__(self, attack_dice, defense_dice, attack_range, attack_mod=[], surge_abilities=[], sorcery_first=True):\n        self.attack_dice = []\n        self.defense_dice = []\n        self.attack_mod = []\n        self.surge_abilities = []\n        self.attack_range = attack_range\n        self.sorcery_first = sorcery_first\n\n        for i in range(len(attack_dice)):\n            tmp_die = die(attack_dice[i])\n            self.attack_dice.append(tmp_die)\n\n        for i in range(len(defense_dice)):\n            tmp_die = die(defense_dice[i])\n            self.defense_dice.append(tmp_die)\n\n        for i in range(len(attack_mod)):\n            self.attack_mod.append(attack_mod[i])\n\n        for i in range(len(surge_abilities)):\n            self.surge_abilities.append(surge_abilities[i])\n\n    def RollAttack(self, attack_override=[], defense_override=[]):\n        ###########################################\n        # Step 1: Declare Target & Weapon\n        ###########################################\n        # This doesn't really have to happen, let's load existing attack mods,\n        # surge mods, and make the attack_result object\n        att_res = attack_result()\n\n        cum_mod = attack_mod()\n        for i in self.attack_mod:\n            cum_mod += i\n\n        surge_ability_list = []\n        for i in self.surge_abilities:\n            surge_ability_list.append(i)\n            cum_mod += i  # NOTE: This is for testing only, disable this\n\n        print(\"Printing Cumulative Mod\")\n        attack_mod.PrintMod(cum_mod)\n\n        ###########################################\n        # Step 2: Roll Dice\n        ###########################################\n\n        att_cum = dieside()\n\n        if not attack_override:\n            #  If attack_override is empty, then actually roll\n            for i in range(len(self.attack_dice)):\n                att_cum += die.roll(self.attack_dice[i])\n        else:\n            #  Don't do a random roll\n            for i in range(len(self.attack_dice)):\n                att_cum += die.roll(self.attack_dice[i], attack_override[i])\n\n        att_res.raw_attack = att_cum\n        def_cum = dieside()\n\n        if not defense_override:\n            #  If defense_override is empty, then actually roll\n            for i in range(len(self.defense_dice)):\n                def_cum += die.roll(self.defense_dice[i])\n        else:\n            #  Don't do a random roll\n            for i in range(len(self.defense_dice)):\n                def_cum += die.roll(self.defense_dice[i], defense_override[i])\n\n        att_res.raw_defense = def_cum\n\n        return att_res\n        ###########################################\n        # Step 3: Check Range, Use sorcery/surge abilities that grant range if nec.\n        ###########################################\n        \n        range_needed = self.attack_range - (cum_mod.range + att_cum.range)\n        no_sorcery = False\n        no_range_mods = False\n\n        while range_needed > 0:\n            # Attack will miss without sorcery/surge abilities\n\n            if self.sorcery_first==True:\n\n                if cum_mod.sorcery > range_needed:\n                    # spend range_needed sorcery, update range_needed\n                elif cum_mod.sorcery > 0:\n                    # spend cum_mod.sorcery, update range_needed\n                else:\n                    no_sorcery = True\n            else:\n                #\n\n            \n\n\n        ###########################################\n        # Step 4: Use surge abilities\n        ###########################################\n\n        ###########################################\n        # Step 5: Calculate results\n        ###########################################\n\n        ###########################################\n        # Step 6: Return attack_result object\n        ###########################################\n",
 			"file": "d2e_attack.py",
-			"file_size": 4032,
-			"file_write_time": 131494481388204694,
 			"settings":
 			{
-				"buffer_size": 3974,
+				"buffer_size": 4049,
+				"encoding": "UTF-8",
 				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "d2e_mods.py",
+			"settings":
+			{
+				"buffer_size": 4397,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "Package Control Messages\n========================\n\nDoxyDoxygen\n-----------\n\n  DoxyDoxygen 0.61.1\n  ------------------\n  \n     - Improvement: Translations now preserve space around the text\n     - Fix: Add Php 7 return type specifier support (https://github.com/20Tauri/DoxyDoxygen/issues/89)\n     - Fix: Php parsing error if \"new\" used as variable name (https://github.com/20Tauri/DoxyDoxygen/issues/88)\n     - Fix: Parsing issue for \"void\" argument (c++)\n     - Fix: Block generation rare crashes\n",
+			"settings":
+			{
+				"buffer_size": 498,
+				"line_ending": "Windows",
+				"name": "Package Control Messages",
+				"read_only": true,
+				"scratch": true
 			}
 		}
 	],
@@ -134,10 +209,13 @@
 	},
 	"expanded_folders":
 	[
-		"/C/Users/Nate/Documents/GitHub/d2e/d2e attack roller"
+		"/C/Users/Krissy/Documents/GitHub/d2e/d2e attack roller"
 	],
 	"file_history":
 	[
+		"/C/Users/Krissy/Documents/python_projects/test_classes.py",
+		"/C/Users/Krissy/Documents/python_projects/test.py",
+		"/C/Users/Krissy/Documents/GitHub/d2e/d2e attack roller/dieside_unit_test",
 		"/C/Users/Krissy/AppData/Roaming/Sublime Text 3/Packages/User/Anaconda.sublime-build",
 		"/C/Users/Krissy/Documents/MATLAB/Projects/Espey Xfrm Model/init.m",
 		"/C/Users/Krissy/Documents/MATLAB/Projects/Espey Xfrm Model/xfrm_params.m",
@@ -149,7 +227,7 @@
 	],
 	"find":
 	{
-		"height": 31.0
+		"height": 35.0
 	},
 	"find_in_files":
 	{
@@ -163,8 +241,22 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"output",
+			"attack_effect",
 			"+",
-			"new_raw",
+			"side_range",
+			"mod_range",
+			"output",
+			"output.sorcery = self.sorcery + other.sorcery\n",
+			"self",
+			"1000",
+			"aa_1_flag",
+			"+",
+			"base_stats_obj",
+			"self",
+			"+=",
+			"dieside",
+			"status_effect",
 			"status",
 			"status_effect",
 			"side",
@@ -214,8 +306,8 @@
 						"selection":
 						[
 							[
-								1131,
-								1131
+								385,
+								385
 							]
 						],
 						"settings":
@@ -245,24 +337,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 6,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "d2e_mods.py",
+					"file": "mod_unit_test.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2852,
+						"buffer_size": 2212,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2147,
-								2147
+								2085,
+								2085
 							]
 						],
 						"settings":
@@ -286,32 +378,30 @@
 									"selector": "source.python - string - constant.numeric"
 								}
 							],
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
+							"syntax": "Packages/Python/Python.sublime-syntax"
 						},
-						"translation.x": 113.0,
-						"translation.y": 0.0,
+						"translation.x": 0.0,
+						"translation.y": 877.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
 					"buffer": 2,
-					"file": "d2e_attack_result.py",
+					"file": "die_unit_test.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1217,
+						"buffer_size": 2948,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								947,
-								947
+								2462,
+								2307
 							]
 						],
 						"settings":
@@ -321,6 +411,63 @@
 								{
 									"characters": ".",
 									"selector": "source.python - string - comment - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								}
+							],
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 1519.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				}
+			]
+		},
+		{
+			"selected": 4,
+			"sheets":
+			[
+				{
+					"buffer": 3,
+					"file": "d2e_attack_result.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1761,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1485,
+								1485
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": ".",
+									"selector": "source.python - string - comment - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
 								},
 								{
 									"characters": ".",
@@ -336,36 +483,32 @@
 								}
 							],
 							"auto_name": "class",
-							"syntax": "Packages/Python/Python.sublime-syntax"
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 593.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 5,
 					"type": "text"
-				}
-			]
-		},
-		{
-			"selected": 0,
-			"sheets":
-			[
+				},
 				{
-					"buffer": 3,
+					"buffer": 4,
 					"file": "d2e_die.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4681,
+						"buffer_size": 6465,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								699,
-								699
+								1660,
+								1660
 							]
 						],
 						"settings":
@@ -395,6 +538,22 @@
 								{
 									"characters": ".",
 									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
 								}
 							],
 							"syntax": "Packages/Python/Python.sublime-syntax",
@@ -402,27 +561,27 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 90.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 3,
 					"type": "text"
 				},
 				{
-					"buffer": 4,
+					"buffer": 5,
 					"file": "d2e_attack.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3974,
+						"buffer_size": 4049,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1827,
-								1827
+								2013,
+								2013
 							]
 						],
 						"settings":
@@ -459,10 +618,109 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 691.0,
+						"translation.y": 1379.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "d2e_mods.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4397,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								39,
+								39
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": ".",
+									"selector": "source.python - string - comment - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								}
+							],
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 498,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								498,
+								498
+							]
+						],
+						"settings":
+						{
+							"auto_indent": false,
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"tab_width": 2,
+							"word_wrap": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
 					"type": "text"
 				}
 			]
@@ -470,7 +728,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 30.0
+		"height": 32.0
 	},
 	"input":
 	{
@@ -496,7 +754,7 @@
 		"cols":
 		[
 			0.0,
-			0.5,
+			0.409277185059,
 			1.0
 		],
 		"rows":
@@ -508,7 +766,7 @@
 	"menu_visible": true,
 	"output.exec":
 	{
-		"height": 297.0
+		"height": 219.0
 	},
 	"output.find_results":
 	{
@@ -518,7 +776,7 @@
 	"project": "d2e_project.sublime-project",
 	"replace":
 	{
-		"height": 58.0
+		"height": 64.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -527,6 +785,10 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"mod",
+				"d2e_mods.py"
+			]
 		],
 		"width": 0.0
 	},
@@ -548,7 +810,7 @@
 		],
 		"width": 0.0
 	},
-	"selected_group": 0,
+	"selected_group": 1,
 	"settings":
 	{
 	},
@@ -556,7 +818,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 153.0,
+	"side_bar_width": 419.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

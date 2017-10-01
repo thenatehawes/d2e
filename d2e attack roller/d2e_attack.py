@@ -90,12 +90,15 @@ class attack:
 
                 if cum_mod.sorcery > range_needed:
                     # spend range_needed sorcery, update range_needed
+                    range_needed = -1
                 elif cum_mod.sorcery > 0:
                     # spend cum_mod.sorcery, update range_needed
+                    range_needed = -1
                 else:
                     # no sorcery, break
+                    range_needed = -1
             else:
-                #
+                range_needed = -1
 
             
 

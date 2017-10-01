@@ -1,11 +1,15 @@
+from d2e_mods import attack_mod
+from d2e_die import dieside
+
+
 class attack_result:
 
     def __init__(self):
-        self.raw_attack = None
-        self.raw_defense = None
-        self.attack_mod = None
-        self.surge_mod = None
-        self.final_result = None
+        self.final_result = final_result()
+        self.raw_attack = dieside()
+        self.raw_defense = dieside()
+        self.attack_mod = attack_mod()
+        self.surge_mod = []
 
     @property
     def raw_attack(self):
@@ -20,29 +24,42 @@ class attack_result:
         return self.__attack_mod
 
     @raw_attack.setter
-    def set_raw_attack(self, dieside):
-        delta = self.raw_attack - dieside  #needed to update final_result
-        self.raw_attack += dieside
+    def raw_attack(self, dieside_obj):
+        if hasattr(self, 'raw_attack'):
+            delta = dieside_obj - self.raw_attack  #needed to update final_result
+        else:
+            delta = dieside_obj
+        self.__raw_attack = dieside_obj
         # update final_result
+        self.final_result.range += delta.range
+        self.final_result.damage_dealt += delta.heart
+        self.final_result.surge += delta.surge
+        self.final_result.miss = delta.miss
 
     @raw_defense.setter
-    def set_raw_defense(self, dieside):
-        delta = self.raw_defense - dieside  #needed to update final_result
-        self.raw_defense += dieside
+    def raw_defense(self, dieside_obj):
+        if hasattr(self, 'raw_defense'):
+            delta = dieside_obj - self.raw_defense  #needed to update final_result
+        else:
+            delta = dieside_obj
+        self.__raw_defense = dieside_obj
         # update final_result
+        self.final_result
 
     @attack_mod.setter
-    def set_attack_mod(self, mod):
-        delta = self.attack_mod - mod  #needed to update final_result
-        self.attack_mod = mod
+    def attack_mod(self, mod):
+        if hasattr(self, 'attack_mod'):
+            delta = mod- self.attack_mod  #needed to update final_result
+        else:
+            delta = mod
+        self.__attack_mod = mod
         # update final_result
 
 
-class final_result:
+class final_result(attack_mod):
 
     def __init__(self):
+        attack_mod.__init__(self)
         self.damage_dealt = 0
-        self.surge_spent = 0
-        self.surge_unspent = 0
-        self.miss = False
-        self.excess_range = 0
+        self.spent_surge = 0
+
